@@ -1,7 +1,11 @@
 const todoListWrapper = document.getElementById("todoList-wrapper")
 const todoInp = document.getElementById("todo-inp")
+const listAction = document.getElementById("listAction-btn")
 
 let todoList = []
+
+let editTodoStatus = false
+let editTodoId = null
 
 function addNewTodo(todoText){
     const newTodoObj = {
@@ -19,20 +23,35 @@ function deleteTodo(todoId){
 }
 
 function updateTodo(todoId , newText){
-    let tempTodoList = []
+    // let tempTodoList = []
 
-    todoList.forEach(item =>{
+    // todoList.forEach(item =>{
+    //     if(item.id !== todoId){
+    //         tempTodoList.push(item)
+    //     }else{
+    //         item.text = newText
+    //         tempTodoList.push(item)
+    //     }
+        
+    // })
+
+    // todoList = tempTodoList
+    // render()
+
+    todoList = todoList.map(item => {
         if(item.id !== todoId){
-            tempTodoList.push(item)
+            return item
         }else{
             item.text = newText
-            tempTodoList.push(item)
+            return item
         }
-        
     })
 
-    todoList = tempTodoList
     render()
+
+    editTodoStatus = false
+    changeSubmitBtnStatus()
+
 }
 
 //// Dom
@@ -47,8 +66,12 @@ function deleteBtnClickHandler(todoId){
 }
 
 function editBtnClickHandler(todoId){
-    let newTodoText = prompt(`edit todo id : ${todoId}`)
-    updateTodo(todoId , newTodoText)
+    // let newTodoText = prompt(`edit todo id : ${todoId}`)
+    // updateTodo(todoId , newTodoText)
+
+    editTodoStatus = true
+    editTodoId = todoId
+    changeSubmitBtnStatus()
 }
 
 function render(){
@@ -79,3 +102,26 @@ function render(){
 
     todoListWrapper.innerHTML = temp
 }
+
+function changeSubmitBtnStatus(){
+
+    if(editTodoStatus){
+        listAction.innerHTML = "Update todo"
+    }else{
+        listAction.innerHTML = "Add todo"
+    }
+
+}
+
+listAction.addEventListener('click',()=>{
+    if(editTodoStatus){
+        console.log("edit handled")
+        updateTodo(editTodoId,todoInp.value)
+    }else{
+        console.log("add handled")
+        addBtnClickHandler()
+    }
+})
+
+
+changeSubmitBtnStatus()
